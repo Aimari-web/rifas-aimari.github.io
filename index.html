@@ -34,6 +34,25 @@
             width: 200px;
             margin: 10px;
         }
+        #btnConfirmarPago {
+            font-size: 20px;
+            padding: 20px 40px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #btnConfirmarPago:hover {
+            background-color: #45a049;
+        }
+        .formulario_pago {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .titulo_pago {
+            font-size: 24px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -55,23 +74,26 @@
     </div>
 
     <div id="pago" class="hidden">
-        <h2>Confirmación de Pago</h2>
-        <p id="monto"></p>
-        <p>Este monto debe pagarse al Yape de los siguientes números:</p>
-        <p>+51 949 493 266</p>
-        <p>+51 961 494 837</p>
-        <p>Adjunte su comprobante de pago. Si no lo hace, no se reservará su ticket.</p>
-        <input type="file" id="comprobante" accept="image/*" required>
-        
-        <!-- Sección de métodos de pago -->
-        <div class="metodos_pago">
-            <img src="yape1.jpg" alt="Método de pago 1">
-            <img src="yape2.jpg" alt="Método de pago 2">
+        <div class="formulario_pago">
+            <h2 class="titulo_pago">Confirmación de Pago</h2>
+            <p id="monto"></p>
+            <p>Este monto debe pagarse al Yape de los siguientes números:</p>
+            <p>+51 949 493 266</p>
+            <p>+51 961 494 837</p>
+            
+            <!-- Métodos de pago (Plin y Yape) -->
+            <div class="metodos_pago">
+                <img src="plin.jpg" alt="Método de pago Plin">
+                <img src="yape1.jpg" alt="Método de pago Yape">
+            </div>
+
+            <!-- Formulario para subir el comprobante -->
+            <p>Adjunte su comprobante de pago. Si no lo hace, no se reservará su ticket.</p>
+            <input type="file" id="comprobante" accept="image/*" required>
+            <button onclick="confirmarPago()">Confirmar Pago</button>
         </div>
-        
-        <button onclick="confirmarPago()">Confirmar Pago</button>
     </div>
-    
+
     <script>
         const numerosContainer = document.getElementById("numeros");
         let ocupados = JSON.parse(localStorage.getItem("ocupados")) || [];
