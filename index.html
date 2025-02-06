@@ -51,6 +51,7 @@
         <p>Seleccione los números que desea comprar:</p>
         <div class="grid" id="numeros"></div>
         <p>Ha seleccionado <span id="cantidadSeleccionada">0</span> números. El precio total es S/ <span id="precioTotal">0</span>.</p>
+        <button id="btnConfirmarPago" class="hidden" onclick="mostrarPago()">Confirmar Pago</button>
     </div>
 
     <div id="pago" class="hidden">
@@ -121,6 +122,12 @@
                 }
             }
             actualizarCantidadYPrecio();
+            // Si al menos un número es seleccionado, mostramos el botón de confirmar pago
+            if (numerosSeleccionados.length > 0) {
+                document.getElementById("btnConfirmarPago").classList.remove("hidden");
+            } else {
+                document.getElementById("btnConfirmarPago").classList.add("hidden");
+            }
         }
 
         function actualizarCantidadYPrecio() {
