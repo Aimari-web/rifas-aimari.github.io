@@ -3,50 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diseño con Colores Extraídos</title>
+    <title>Bienvenido a Aimari</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #ECE1DA;
-            color: #302D2E;
-            margin: 0;
-            padding: 0;
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            background-color: #ffebf2; /* Rosa pastel */
+            color: #d84b7a; /* Rosa fuerte para los textos */
         }
-        .header {
-            background-color: #83736E;
-            padding: 20px;
-            text-align: center;
-            color: white;
-            font-size: 24px;
+        h2 {
+            color: #e91e63;
+            font-size: 2em;
         }
-        .content {
-            background-color: #D5C1B4;
-            padding: 40px;
-            text-align: center;
+        p {
+            font-size: 1.1em;
         }
-        .card {
-            background-color: #B5A39B;
-            padding: 20px;
-            margin: 20px auto;
-            width: 80%;
+        .hidden { display: none; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(10, 1fr); 
+            gap: 5px; 
+            max-width: 500px; 
+            margin: auto; 
+            background-image: url('https://www.freepnglogos.com/uploads/cake-png/cake-png-image-12.png'); /* Agregar imagen de pastel */
+            background-size: 80px;
+            background-repeat: no-repeat;
+        }
+        .number { 
+            padding: 10px; 
+            border: 1px solid #ff66b2; 
+            cursor: pointer; 
+            background-color: #fff; 
             border-radius: 8px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         }
-        .footer {
-            background-color: #302D2E;
+        .taken { 
+            background-color: #e91e63; 
+            cursor: not-allowed; 
+        }
+        .available { 
+            background-color: #ff66b2; 
+            color: white; 
+        }
+        .button {
+            background-color: #ff66b2;
             color: white;
-            text-align: center;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #e91e63;
+        }
+        .input {
             padding: 10px;
-            position: relative;
+            border-radius: 8px;
+            border: 1px solid #ff66b2;
+            width: 70%;
+            margin-bottom: 20px;
+        }
+        .decoration {
+            background-image: url('https://www.freepnglogos.com/uploads/heart-png/heart-png-images-free-download-2.png');
+            background-size: 30px;
+            background-repeat: no-repeat;
+            background-position: center;
+            height: 50px;
+            width: 100%;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="header">Encabezado con Color Marrón Claro</div>
-    <div class="content">
-        <div class="card">Esta es una tarjeta con un fondo beige</div>
-        <div class="card">Otra tarjeta de ejemplo</div>
+    <div id="welcome">
+        <h2>Bienvenido a Aimari</h2>
+        <p>¡Celebra el Día del Amor y la Amistad con nosotros! 🎉💝</p>
+        <div class="decoration"></div>
+        <p>Por favor, digite sus nombres y apellidos:</p>
+        <input type="text" id="nombre" placeholder="Nombre Completo" class="input" required>
+        <button class="button" onclick="continuar()">Continuar</button>
     </div>
-    <div class="footer">Pie de página en gris oscuro</div>
+    
+    <div id="rifa" class="hidden">
+        <h2>Rifa de 100 Números 🎲</h2>
+        <p>Selecciona la cantidad de números que deseas comprar. ¡Cada número es una oportunidad para ganar!</p>
+        <input type="number" id="cantidad" min="1" max="100" class="input">
+        <button class="button" onclick="seleccionarCantidad()">Continuar</button>
+        <div class="grid" id="numeros"></div>
+    </div>
+
+    <div id="pago" class="hidden">
+        <h2>Confirmación de Pago 💸</h2>
+        <p id="monto"></p>
+        <p>Este monto debe pagarse al Yape de los siguientes números:</p>
+        <p>+51 949 493 266</p>
+        <p>+51 961 494 837</p>
+        <p>Adjunta tu comprobante de pago para finalizar el proceso.</p>
+        <input type="file" id="comprobante" accept="image/*" class="input" required>
+        <button class="button" onclick="confirmarPago()">Confirmar Pago</button>
+    </div>
+    
+    <script>
+        const numerosContainer = document.getElementById("numeros");
+        let ocupados = JSON.parse(localStorage.getItem("ocupados")) || [];
+        const SHEET_URL = "https://script.google.com/macros/s/AKfycbyfFnpaB7ls-YyRJL73LVX6r19tDEs2iItJ5k2yvDSrHzRgaXQARqogxHEmNrzlHDaEsQ/exec";
+        let nombreCompleto = "";
+        let cantidadSeleccionada = 0;
+        let numerosSeleccionados = [];
+
+        function continuar() {
+            nombreCompleto = document.getElementById("nombre").value;
+            if (!nombreCompleto) {
+                alert("Por favor, ingrese su nombre completo.");
+                return;
+            }
+            document.getElementById("welcome").classList.add("hidden");
+            document.getElementById("rifa").classList.remove("hidden");
+        }
+
+        function seleccionarCantidad() {
+            cantidadSeleccionada = parseInt(document.getElementById("cantidad").value);
+            if (!cantidadSeleccionada || cantidadSeleccionada < 1 || cantidadSeleccionada > 100) {
+                alert("Seleccione una cantidad válida.");
+                return;
+            }
+            actualizarNumeros();
+        }
+
+        function actualizarNumeros() {
+            numerosContainer.innerHTML = "";
+            for (let i = 1; i <= 100; i++) {
+                let num = document.createElement("div");
+                num.textContent = i;
+                num.classList.add("number");
+                if (ocupados.includes(i)) {
+                    num.classList.add("taken");
+                } else {
+                    num.classList.add("available");
+                    num.onclick = () => seleccionarNumero(i);
+                }
+                numerosContainer.appendChild(num);
+            }
+        }
+
+        function seleccionarNumero(numero) {
+            if (numerosSeleccionados.length >= cantidadSeleccionada) {
+                alert(`Ya seleccionaste la cantidad de números deseada.`);
+                return;
+            }
+            numerosSeleccionados.push(numero);
+            alert(`Número ${numero} reservado. 🎉`);
+            if (numerosSeleccionados.length === cantidadSeleccionada) {
+                mostrarPago();
+            }
+        }
+
+        function mostrarPago() {
+            let montoTotal = cantidadSeleccionada * 7;
+            document.getElementById("monto").textContent = `Debe pagar: S/ ${montoTotal}`;
+            document.getElementById("rifa").classList.add("hidden");
+            document.getElementById("pago").classList.remove("hidden");
+        }
+
+        function confirmarPago() {
+            const comprobante = document.getElementById("comprobante").files[0];
+            if (!comprobante) {
+                alert("Debe adjuntar el comprobante de pago para reservar su ticket.");
+                return;
+            }
+            let pagoRealizado = "Sí";
+            
+            ocupados = ocupados.concat(numerosSeleccionados);
+            localStorage.setItem("ocupados", JSON.stringify(ocupados));
+            alert(`¡Registro completado para ${nombreCompleto}! 🎉`);
+
+            // Enviar datos a Google Sheets
+            let formData = new FormData();
+            formData.append("nombre", nombreCompleto);
+            formData.append("numeros", numerosSeleccionados.join(", "));
+            formData.append("pago", pagoRealizado);
+            
+            fetch(SHEET_URL, {
+                method: "POST",
+                body: formData
+            }).then(response => response.text())
+              .then(data => console.log("Enviado a Google Sheets", data))
+              .catch(error => console.error("Error enviando datos", error));
+        }
+    </script>
 </body>
 </html>
