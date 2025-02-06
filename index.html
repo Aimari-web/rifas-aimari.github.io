@@ -5,10 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenido a Aimari</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            background-color: #f4f4f4; 
+            margin: 0; 
+            padding: 20px;
+        }
         .hidden { display: none; }
-        .grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; max-width: 500px; margin: auto; }
-        .number { padding: 10px; border: 1px solid #000; cursor: pointer; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(10, 1fr); 
+            gap: 5px; 
+            max-width: 500px; 
+            margin: auto; 
+        }
+        .number { 
+            padding: 10px; 
+            border: 1px solid #000; 
+            cursor: pointer; 
+        }
         .taken { background-color: red; cursor: not-allowed; }
         .available { background-color: green; color: white; }
     </style>
@@ -114,7 +130,6 @@
             localStorage.setItem("ocupados", JSON.stringify(ocupados));
             alert(`Registro completado para ${nombreCompleto}.`);
             
-            // Enviar datos a Google Sheets
             let formData = new FormData();
             formData.append("nombre", nombreCompleto);
             formData.append("numeros", numerosSeleccionados.join(", "));
