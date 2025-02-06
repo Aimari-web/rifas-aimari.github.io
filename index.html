@@ -21,6 +21,7 @@
         .number { padding: 10px; border: 1px solid #000; cursor: pointer; background-color: #fff; }
         .taken { background-color: red; cursor: not-allowed; }
         .available { background-color: green; color: white; }
+        .selected { background-color: #4CAF50; color: white; }
         .decoracion {
             background-image: url('corazones.png');
             background-repeat: no-repeat;
@@ -99,26 +100,27 @@
                     num.classList.add("taken");
                 } else {
                     num.classList.add("available");
-                    num.onclick = () => seleccionarNumero(i);
+                    num.onclick = () => seleccionarNumero(i, num);
                 }
                 numerosContainer.appendChild(num);
             }
         }
 
-        function seleccionarNumero(numero) {
+        function seleccionarNumero(numero, numElement) {
             if (numerosSeleccionados.includes(numero)) {
                 // Si el número ya está seleccionado, se deselecciona
                 numerosSeleccionados = numerosSeleccionados.filter(n => n !== numero);
-                actualizarCantidadYPrecio();
+                numElement.classList.remove("selected");
             } else {
                 // Si no está seleccionado, se agrega
                 if (numerosSeleccionados.length < 10) { // Limitar a 10 números máximo
                     numerosSeleccionados.push(numero);
-                    actualizarCantidadYPrecio();
+                    numElement.classList.add("selected");
                 } else {
                     alert("Solo puede seleccionar hasta 10 números.");
                 }
             }
+            actualizarCantidadYPrecio();
         }
 
         function actualizarCantidadYPrecio() {
