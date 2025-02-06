@@ -47,24 +47,24 @@
     
     <div id="rifa" class="hidden">
         <h2>Rifa de 100 Números</h2>
-        <p>Seleccione la cantidad de números que desea comprar:</p>
-        <input type="number" id="cantidad" min="1" max="100">
-        <button onclick="seleccionarCantidad()">Continuar</button>
+        <p>Seleccione los números que desea comprar:</p>
         <div class="grid" id="numeros"></div>
+        <p>Ha seleccionado <span id="cantidadSeleccionada">0</span> números. El precio total es S/ <span id="precioTotal">0</span>.</p>
     </div>
 
     <div id="pago" class="hidden">
         <h2>Confirmación de Pago</h2>
         <p id="monto"></p>
-        <p>Este monto debe pagarse al siguiente numero:</p>
+        <p>Este monto debe pagarse al Yape de los siguientes números:</p>
+        <p>+51 949 493 266</p>
         <p>+51 961 494 837</p>
         <p>Adjunte su comprobante de pago. Si no lo hace, no se reservará su ticket.</p>
         <input type="file" id="comprobante" accept="image/*" required>
         
         <!-- Sección de métodos de pago -->
         <div class="metodos_pago">
-            <img src="yape.png" alt="Método de pago 1">
-            <img src="plin.png" alt="Método de pago 2">
+            <img src="yape1.jpg" alt="Método de pago 1">
+            <img src="yape2.jpg" alt="Método de pago 2">
         </div>
         
         <button onclick="confirmarPago()">Confirmar Pago</button>
@@ -75,8 +75,8 @@
         let ocupados = JSON.parse(localStorage.getItem("ocupados")) || [];
         const SHEET_URL = "https://script.google.com/macros/s/AKfycbyfFnpaB7ls-YyRJL73LVX6r19tDEs2iItJ5k2yvDSrHzRgaXQARqogxHEmNrzlHDaEsQ/exec";
         let nombreCompleto = "";
-        let cantidadSeleccionada = 0;
         let numerosSeleccionados = [];
+        const precioPorNumero = 7;  // Precio por número de boleto
 
         function continuar() {
             nombreCompleto = document.getElementById("nombre").value;
@@ -86,14 +86,6 @@
             }
             document.getElementById("welcome").classList.add("hidden");
             document.getElementById("rifa").classList.remove("hidden");
-        }
-
-        function seleccionarCantidad() {
-            cantidadSeleccionada = parseInt(document.getElementById("cantidad").value);
-            if (!cantidadSeleccionada || cantidadSeleccionada < 1 || cantidadSeleccionada > 100) {
-                alert("Seleccione una cantidad válida.");
-                return;
-            }
             actualizarNumeros();
         }
 
@@ -114,19 +106,30 @@
         }
 
         function seleccionarNumero(numero) {
-            if (numerosSeleccionados.length >= cantidadSeleccionada) {
-                alert(`Ya seleccionaste la cantidad de números deseada.`);
-                return;
-            }
-            numerosSeleccionados.push(numero);
-            alert(`Número ${numero} reservado.`);
-            if (numerosSeleccionados.length === cantidadSeleccionada) {
-                mostrarPago();
+            if (numerosSeleccionados.includes(numero)) {
+                // Si el número ya está seleccionado, se deselecciona
+                numerosSeleccionados = numerosSeleccionados.filter(n => n !== numero);
+                actualizarCantidadYPrecio();
+            } else {
+                // Si no está seleccionado, se agrega
+                if (numerosSeleccionados.length < 10) { // Limitar a 10 números máximo
+                    numerosSeleccionados.push(numero);
+                    actualizarCantidadYPrecio();
+                } else {
+                    alert("Solo puede seleccionar hasta 10 números.");
+                }
             }
         }
 
+        function actualizarCantidadYPrecio() {
+            const cantidad = numerosSeleccionados.length;
+            const precio = cantidad * precioPorNumero;
+            document.getElementById("cantidadSeleccionada").textContent = cantidad;
+            document.getElementById("precioTotal").textContent = precio;
+        }
+
         function mostrarPago() {
-            let montoTotal = cantidadSeleccionada * 7;
+            let montoTotal = numerosSeleccionados.length * precioPorNumero;
             document.getElementById("monto").textContent = `Debe pagar: S/ ${montoTotal}`;
             document.getElementById("rifa").classList.add("hidden");
             document.getElementById("pago").classList.remove("hidden");
