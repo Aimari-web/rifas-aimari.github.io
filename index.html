@@ -5,101 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenido a Aimari</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            text-align: center; 
-            background-color: #ffebf2; /* Rosa pastel */
-            color: #d84b7a; /* Rosa fuerte para los textos */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8c8d9;
+            color: #333;
+            margin: 0;
+            padding: 0;
         }
         h2 {
-            color: #e91e63;
-            font-size: 2em;
-        }
-        p {
-            font-size: 1.1em;
+            color: #d23677;
         }
         .hidden { display: none; }
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(10, 1fr); 
-            gap: 5px; 
-            max-width: 500px; 
-            margin: auto; 
-            background-image: url('https://www.freepnglogos.com/uploads/cake-png/cake-png-image-12.png'); /* Agregar imagen de pastel */
-            background-size: 80px;
-            background-repeat: no-repeat;
-        }
-        .number { 
-            padding: 10px; 
-            border: 1px solid #ff66b2; 
-            cursor: pointer; 
-            background-color: #fff; 
-            border-radius: 8px;
-        }
-        .taken { 
-            background-color: #e91e63; 
-            cursor: not-allowed; 
-        }
-        .available { 
-            background-color: #ff66b2; 
-            color: white; 
-        }
-        .button {
-            background-color: #ff66b2;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .button:hover {
-            background-color: #e91e63;
-        }
-        .input {
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ff66b2;
-            width: 70%;
-            margin-bottom: 20px;
-        }
-        .decoration {
-            background-image: url('https://www.freepnglogos.com/uploads/heart-png/heart-png-images-free-download-2.png');
-            background-size: 30px;
+        .grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; max-width: 500px; margin: auto; }
+        .number { padding: 10px; border: 1px solid #000; cursor: pointer; background-color: #fff; }
+        .taken { background-color: red; cursor: not-allowed; }
+        .available { background-color: green; color: white; }
+        .decoracion {
+            background-image: url('corazones.png');
             background-repeat: no-repeat;
             background-position: center;
-            height: 50px;
+            background-size: contain;
+            height: 200px;
             width: 100%;
-            margin-top: 20px;
+        }
+        .metodos_pago img {
+            width: 200px;
+            margin: 10px;
         }
     </style>
 </head>
 <body>
     <div id="welcome">
         <h2>Bienvenido a Aimari</h2>
-        <p>¡Celebra el Día del Amor y la Amistad con nosotros! 🎉💝</p>
-        <div class="decoration"></div>
         <p>Por favor, digite sus nombres y apellidos:</p>
-        <input type="text" id="nombre" placeholder="Nombre Completo" class="input" required>
-        <button class="button" onclick="continuar()">Continuar</button>
+        <input type="text" id="nombre" placeholder="Nombre Completo" required>
+        <button onclick="continuar()">Continuar</button>
     </div>
     
+    <div class="decoracion"></div>
+    
     <div id="rifa" class="hidden">
-        <h2>Rifa de 100 Números 🎲</h2>
-        <p>Selecciona la cantidad de números que deseas comprar. ¡Cada número es una oportunidad para ganar!</p>
-        <input type="number" id="cantidad" min="1" max="100" class="input">
-        <button class="button" onclick="seleccionarCantidad()">Continuar</button>
+        <h2>Rifa de 100 Números</h2>
+        <p>Seleccione la cantidad de números que desea comprar:</p>
+        <input type="number" id="cantidad" min="1" max="100">
+        <button onclick="seleccionarCantidad()">Continuar</button>
         <div class="grid" id="numeros"></div>
     </div>
 
     <div id="pago" class="hidden">
-        <h2>Confirmación de Pago 💸</h2>
+        <h2>Confirmación de Pago</h2>
         <p id="monto"></p>
-        <p>Este monto debe pagarse al Yape de los siguientes números:</p>
-        <p>+51 949 493 266</p>
+        <p>Este monto debe pagarse al siguiente numero:</p>
         <p>+51 961 494 837</p>
-        <p>Adjunta tu comprobante de pago para finalizar el proceso.</p>
-        <input type="file" id="comprobante" accept="image/*" class="input" required>
-        <button class="button" onclick="confirmarPago()">Confirmar Pago</button>
+        <p>Adjunte su comprobante de pago. Si no lo hace, no se reservará su ticket.</p>
+        <input type="file" id="comprobante" accept="image/*" required>
+        
+        <!-- Sección de métodos de pago -->
+        <div class="metodos_pago">
+            <img src="yape.png" alt="Método de pago 1">
+            <img src="plin.png" alt="Método de pago 2">
+        </div>
+        
+        <button onclick="confirmarPago()">Confirmar Pago</button>
     </div>
     
     <script>
@@ -151,7 +119,7 @@
                 return;
             }
             numerosSeleccionados.push(numero);
-            alert(`Número ${numero} reservado. 🎉`);
+            alert(`Número ${numero} reservado.`);
             if (numerosSeleccionados.length === cantidadSeleccionada) {
                 mostrarPago();
             }
@@ -174,8 +142,8 @@
             
             ocupados = ocupados.concat(numerosSeleccionados);
             localStorage.setItem("ocupados", JSON.stringify(ocupados));
-            alert(`¡Registro completado para ${nombreCompleto}! 🎉`);
-
+            alert(`Registro completado para ${nombreCompleto}.`);
+            
             // Enviar datos a Google Sheets
             let formData = new FormData();
             formData.append("nombre", nombreCompleto);
